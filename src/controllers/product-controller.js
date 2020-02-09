@@ -1,7 +1,32 @@
 'use strict';
 
+const mongoose = require('mongoose');
+const Product = mongoose.model('Product');
+
 exports.post = (req, res, next) => {
-    res.status(201).send(req.body); // Created enviando o corpo da requisição já convertido
+    var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
+
+    /* // Passando pelos padrões definidos no Model.
+    var product = new Product(); // Criando instância
+    product.title = req.body.title;
+    product.slug = req.body.slug;
+    product.description = req.body.description;
+    product.price = req.body.price;
+    product.active = req.body.active;
+    product.tags = req.body.tags; */
+
+    product
+        .save() // Salva o item no BD -> Retorna uma promise (Não é ctz que salvou no banco, por isso o tratamento no then)
+        .then(x => {  // Se der certo... Created
+            res.status(201).send({
+                message: 'Produto cadastrado com sucesso!'
+            });
+        }).catch(e => {  // Se der ruim... Bad Request
+            res.status(400).send({
+                message: 'Falha ao cadastrar o produto',
+                data: e
+            });
+        });
 };
 
 exports.put = (req, res, next) => {
