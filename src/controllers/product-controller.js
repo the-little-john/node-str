@@ -13,7 +13,7 @@ exports.get = (req, res, next) => {
         .then(data => {  // Se der certo... Recebe data e manda no response
             res.status(200).send(data);
         }).catch(e => {  // Se der ruim... Bad Request
-            res.status(400).send({e});
+            res.status(400).send({ e });
         });
 }
 
@@ -21,22 +21,22 @@ exports.getBySlug = (req, res, next) => {
     Product
         .findOne({ // Procura um único registro ao invés de retornar um array de resultados
             slug: req.params.slug,
-            active: true 
-        }, 'title description price slug tags') 
-        .then(data => {  
+            active: true
+        }, 'title description price slug tags')
+        .then(data => {
             res.status(200).send(data);
-        }).catch(e => {  
-            res.status(400).send({e});
+        }).catch(e => {
+            res.status(400).send({ e });
         });
 }
 
 exports.getById = (req, res, next) => {
     Product
         .findById(req.params.id) // Procura pelo id da rota
-        .then(data => {  
+        .then(data => {
             res.status(200).send(data);
-        }).catch(e => {  
-            res.status(400).send({e});
+        }).catch(e => {
+            res.status(400).send({ e });
         });
 }
 
@@ -44,12 +44,12 @@ exports.getByTag = (req, res, next) => {
     Product
         .find({
             tags: req.params.tag, // Filtra por uma tag dentro do array de tags (Sem precisar de forEach)
-            active: true, 
-        }, 'title description price slug tags') 
-        .then(data => {  
+            active: true,
+        }, 'title description price slug tags')
+        .then(data => {
             res.status(200).send(data);
-        }).catch(e => {  
-            res.status(400).send({e});
+        }).catch(e => {
+            res.status(400).send({ e });
         });
 }
 
@@ -79,7 +79,7 @@ exports.post = (req, res, next) => {
         });
 };
 
-exports.put = (req, res, next) => {
+exports.put = (req, res, next) => { // Atualiza produto
     Product
         .findByIdAndUpdate(req.params.id, {
             $set: {
@@ -100,6 +100,17 @@ exports.put = (req, res, next) => {
         });
 };
 
-exports.delete = (req, res, next) => {
-    res.status(200).send(req.body);
+exports.delete = (req, res, next) => { // Exclui produto
+    Product
+        .findOneAndRemove(req.body.id)
+        .then(x => {
+            res.status(200).send({
+                message: `Produto: '${req.body.id}' removido com sucesso!`
+            });
+        }).catch(e => {
+            res.status(400).send({
+                message: 'Falha ao remover o produto',
+                data: e
+            });
+        });
 };
