@@ -17,6 +17,19 @@ exports.get = (req, res, next) => {
         });
 }
 
+exports.getBySlug = (req, res, next) => {
+    Product
+        .findOne({ // Procura um único registro ao invés de retornar um array de resultados
+            slug: req.params.slug,
+            active: true 
+        }, 'title description price slug tags') 
+        .then(data => {  
+            res.status(200).send(data);
+        }).catch(e => {  
+            res.status(400).send({e});
+        });
+}
+
 exports.post = (req, res, next) => {
     var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
 
