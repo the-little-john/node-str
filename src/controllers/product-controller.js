@@ -40,6 +40,19 @@ exports.getById = (req, res, next) => {
         });
 }
 
+exports.getByTag = (req, res, next) => {
+    Product
+        .find({
+            tags: req.params.tag, // Filtra por uma tag dentro do array de tags (Sem precisar de forEach)
+            active: true, 
+        }, 'title description price slug tags') 
+        .then(data => {  
+            res.status(200).send(data);
+        }).catch(e => {  
+            res.status(400).send({e});
+        });
+}
+
 exports.post = (req, res, next) => {
     var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
 
