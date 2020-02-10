@@ -3,6 +3,20 @@
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
 
+exports.get = (req, res, next) => {
+    Product
+        .find({
+            active: true // Filtra somente os registros que estão ativos
+        }, 'title price slug') //  Trás somente os campos informados após a vírgula  
+        // {} -> Trás todos os registros (Sem filtro)
+        // {name: 'john'} -> Filtra pelo nome john
+        .then(data => {  // Se der certo... Recebe data e manda no response
+            res.status(200).send(data);
+        }).catch(e => {  // Se der ruim... Bad Request
+            res.status(400).send({e});
+        });
+}
+
 exports.post = (req, res, next) => {
     var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
 
