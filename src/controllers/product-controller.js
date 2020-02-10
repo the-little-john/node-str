@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
+const ValidationContract = require('../validators/fluent-validator');
 
 exports.get = (req, res, next) => {
     Product
@@ -54,6 +55,17 @@ exports.getByTag = (req, res, next) => {
 }
 
 exports.post = (req, res, next) => {
+    let contract = new ValidationContract(); // Instancia o contrato -> Melhor contrato do que vários if de validações no código
+    contract.hasMinLen(req.body.title, 3, 'O título deve conter pelo menos 3 caracteres');
+    contract.hasMinLen(req.body.slug, 3, 'O slug deve conter pelo menos 3 caracteres');
+    contract.hasMinLen(req.body.description, 3, 'A descrição deve conter pelo menos 3 caracteres');
+
+    // Se os dados forem inválidos
+    if (!contract.isValid()){
+        res.status(400).send(contract.errors()).end(); 
+        return;
+    }
+
     var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
 
     /* // Passando pelos padrões definidos no Model.
