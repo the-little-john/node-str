@@ -3,14 +3,11 @@
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
 const ValidationContract = require('../validators/fluent-validator');
+const repository = require('../repositories/product-repository');
 
 exports.get = (req, res, next) => {
-    Product
-        .find({
-            active: true // Filtra somente os registros que estão ativos
-        }, 'title price slug') //  Trás somente os campos informados após a vírgula  
-        // {} -> Trás todos os registros (Sem filtro)
-        // {name: 'john'} -> Filtra pelo nome john
+    repository
+        .get() // Chama no repository
         .then(data => {  // Se der certo... Recebe data e manda no response
             res.status(200).send(data);
         }).catch(e => {  // Se der ruim... Bad Request
@@ -19,11 +16,8 @@ exports.get = (req, res, next) => {
 }
 
 exports.getBySlug = (req, res, next) => {
-    Product
-        .findOne({ // Procura um único registro ao invés de retornar um array de resultados
-            slug: req.params.slug,
-            active: true
-        }, 'title description price slug tags')
+    repository
+        .getBySlug(req.params.slug)
         .then(data => {
             res.status(200).send(data);
         }).catch(e => {
@@ -32,8 +26,8 @@ exports.getBySlug = (req, res, next) => {
 }
 
 exports.getById = (req, res, next) => {
-    Product
-        .findById(req.params.id) // Procura pelo id da rota
+    repository
+        .getById(req.params.id)
         .then(data => {
             res.status(200).send(data);
         }).catch(e => {
@@ -42,11 +36,8 @@ exports.getById = (req, res, next) => {
 }
 
 exports.getByTag = (req, res, next) => {
-    Product
-        .find({
-            tags: req.params.tag, // Filtra por uma tag dentro do array de tags (Sem precisar de forEach)
-            active: true,
-        }, 'title description price slug tags')
+    repository
+        .getByTag(req.params.tag)
         .then(data => {
             res.status(200).send(data);
         }).catch(e => {
@@ -61,24 +52,13 @@ exports.post = (req, res, next) => {
     contract.hasMinLen(req.body.description, 3, 'A descrição deve conter pelo menos 3 caracteres');
 
     // Se os dados forem inválidos
-    if (!contract.isValid()){
-        res.status(400).send(contract.errors()).end(); 
+    if (!contract.isValid()) {
+        res.status(400).send(contract.errors()).end();
         return;
     }
 
-    var product = new Product(req.body); // Tudo da requisição é passado para o corpo do produto (Pode passar qualquer coisa fora do definido no Model)
-
-    /* // Passando pelos padrões definidos no Model.
-    var product = new Product(); // Criando instância
-    product.title = req.body.title;
-    product.slug = req.body.slug;
-    product.description = req.body.description;
-    product.price = req.body.price;
-    product.active = req.body.active;
-    product.tags = req.body.tags; */
-
-    product
-        .save() // Salva o item no BD -> Retorna uma promise (Não é ctz que salvou no banco, por isso o tratamento no then)
+    repository
+        .create(req.body)
         .then(x => {  // Se der certo... Created
             res.status(201).send({
                 message: 'Produto cadastrado com sucesso!'
@@ -92,15 +72,9 @@ exports.post = (req, res, next) => {
 };
 
 exports.put = (req, res, next) => { // Atualiza produto
-    Product
-        .findByIdAndUpdate(req.params.id, {
-            $set: {
-                title: req.body.title,
-                description: req.body.description,
-                price: req.body.price,
-                slug: req.body.slug
-            }
-        }).then(x => {
+    repository
+        .update(req.params.id, req.body)
+        .then(x => {
             res.status(200).send({
                 message: 'Produto atualizado com sucesso!'
             });
@@ -113,8 +87,8 @@ exports.put = (req, res, next) => { // Atualiza produto
 };
 
 exports.delete = (req, res, next) => { // Exclui produto
-    Product
-        .findOneAndRemove(req.body.id)
+    repository
+        .delete(req.body.id)
         .then(x => {
             res.status(200).send({
                 message: `Produto: '${req.body.id}' removido com sucesso!`
