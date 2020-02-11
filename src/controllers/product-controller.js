@@ -99,10 +99,6 @@ exports.delete = async (req, res, next) => { // Exclui produto
         res.status(200).send({
             message: `Produto: '${req.params.id}' removido com sucesso!`
         });
-        res.status(400).send({
-            message: 'Falha ao remover o produto',
-            data: e
-        });
     } catch (e) {
         res.status(500).send({
             message: 'Falha ao processar sua requisição',
