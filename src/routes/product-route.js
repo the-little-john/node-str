@@ -11,6 +11,6 @@ router.get('/admin/:id', controller.getById); // Tem que ter o '/admin/' para n√
 router.get('/tags/:tag', controller.getByTag);
 router.post('/', controller.post); // Chama a rota 'post' no product-controller
 router.put('/:id', controller.put);
-router.delete('/', controller.delete);
+router.delete('/:id', controller.delete);
 
 module.exports = router;

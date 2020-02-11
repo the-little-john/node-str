@@ -88,10 +88,10 @@ exports.put = (req, res, next) => { // Atualiza produto
 
 exports.delete = (req, res, next) => { // Exclui produto
     repository
-        .delete(req.body.id)
+        .delete(req.params.id)
         .then(x => {
             res.status(200).send({
-                message: `Produto: '${req.body.id}' removido com sucesso!`
+                message: `Produto: '${req.params.id}' removido com sucesso!`
             });
         }).catch(e => {
             res.status(400).send({

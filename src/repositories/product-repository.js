@@ -52,5 +52,7 @@ exports.update = (id, data) => {
 
 exports.delete = (id) => {
     return Product
-        .findOneAndRemove(id);
+        .findOneAndRemove({
+            _id: id
+        });
 }
