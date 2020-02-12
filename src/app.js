@@ -3,12 +3,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const config = require('./config');
 
 const app = express(); // Instância do express
 const router = express.Router(); // Arquivo de rotas
 
 // Conecta ao Banco
-mongoose.connect('mongodb+srv://joaozinho:joaozinho@cluster0-ah95t.mongodb.net/test?retryWrites=true&w=majority');
+mongoose.connect(config.connectionString);
 
 // Carrega os models
 const Product = require('./models/product');
