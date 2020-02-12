@@ -19,6 +19,7 @@ const Order = require('./models/order');
 const indexRoute = require('./routes/index-route');
 const productRoute = require('./routes/product-route');
 const customerRoute = require('./routes/customer-route');
+const orderRoute = require('./routes/order-route');
 
 // Middleware que converte o conteúdo do body
 app.use(bodyParser.json()); // Todo conteúdo vai ser convertido para JSON
@@ -28,5 +29,6 @@ app.use(bodyParser.urlencoded({ extended: false }));// Serve para codificar as U
 app.use('/', indexRoute); 
 app.use('/products', productRoute);
 app.use('/customers', customerRoute);
+app.use('/orders', orderRoute);
 
 module.exports = app; // Exporta a classe (É o que vai ser enviado para a classe que importou)
