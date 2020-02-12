@@ -18,4 +18,4 @@ const schema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Customer', schema);  // Exportando model Product
+module.exports = mongoose.model('Customer', schema);
