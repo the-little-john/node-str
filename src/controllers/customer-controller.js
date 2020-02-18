@@ -56,6 +56,7 @@ exports.authenticate = async (req, res, next) => {
 
         // Gera token JWT com o email e nome
         const token = await authService.generateToken({
+            id : customer._id,
             email: customer.email,
             name: customer.name
         })
