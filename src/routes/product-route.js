@@ -2,15 +2,16 @@
 
 const express = require('express');
 const router = express.Router(); // Arquivo de rotas
-const controller =  require('../controllers/product-controller');
+const controller = require('../controllers/product-controller');
+const authService = require('../services/auth-service');
 
 // Chamando métodos no controller 
 router.get('/', controller.get);
 router.get('/:slug', controller.getBySlug);
 router.get('/admin/:id', controller.getById); // Tem que ter o '/admin/' para não dar conflito com a rota de cima
-router.get('/tags/:tag', controller.getByTag);
-router.post('/', controller.post); // Chama a rota 'post' no product-controller
-router.put('/:id', controller.put);
-router.delete('/:id', controller.delete);
+router.get('/tags/:tag', controller.getByTag); // Chama a rota 'getByTag' no product-controller 
+router.post('/', authService.authorize, controller.post); // Rota com autenticação JWT
+router.put('/:id', authService.authorize, controller.put);
+router.delete('/:id', authService.authorize, controller.delete);
 
 module.exports = router;
