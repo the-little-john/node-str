@@ -19,7 +19,7 @@ const schema = new Schema({
     },
     description: {
         type: String,
-        required: true 
+        required: true
     },
     price: {
         type: Number,
@@ -33,7 +33,12 @@ const schema = new Schema({
     tags: [{ // Array de strings que permite incluirmos diversos valores como tags
         type: String,
         required: true
-    }]
+    }],
+    image: {
+        type: String,
+        required: true,
+        trim: true
+    }
 });
 
 module.exports = mongoose.model('Product', schema);  // Exportando model Product
