@@ -23,11 +23,23 @@ const customerRoute = require('./routes/customer-route');
 const orderRoute = require('./routes/order-route');
 
 // Middleware que converte o conteúdo do body
-app.use(bodyParser.json()); // Todo conteúdo vai ser convertido para JSON
-app.use(bodyParser.urlencoded({ extended: false }));// Serve para codificar as URLs -> Ex: 'espaço' ==> '%20'
+app.use(bodyParser.json({
+    limit: '5mb' // Seta o limite do json do body
+})); // Todo conteúdo vai ser convertido para JSON
+app.use(bodyParser.urlencoded({
+    extended: false
+}));// Serve para codificar as URLs -> Ex: 'espaço' ==> '%20'
+
+// Habilita o CORS - Cross-Origin Resource Sharing
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-access-token');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+});
 
 // Direciona uma rota x para o seu route correspondente
-app.use('/', indexRoute); 
+app.use('/', indexRoute);
 app.use('/products', productRoute);
 app.use('/customers', customerRoute);
 app.use('/orders', orderRoute);
