@@ -16,3 +16,9 @@ exports.authenticate = async (data) => { // Autentica usuário (JWT)
         });
     return res;
 }
+
+exports.getById = async (id) => { // Autentica usuário (JWT)
+    const res = await Customer
+        .findById(id);
+    return res;
+}
